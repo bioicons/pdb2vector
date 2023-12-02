@@ -103,7 +103,7 @@ function vectorize() {
               @chainchanged="updateTarget"
             />
             <div class="mt-4 max-w-[90%] mx-auto">
-              <VisualizationRadioGroup />
+              <VisualizationRadioGroup @update-visualization="(value) => {console.log(value)}"/>
             </div>
           </div>
           <div class="w-1/2">

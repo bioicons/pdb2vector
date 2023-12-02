@@ -15,6 +15,8 @@
             name="plan"
             :id="type"
             :value="type"
+            v-model="selectedType"
+            @change="$emit('updateVisualization', selectedType)"
             class="absolute h-0 w-0 appearance-none"
           />
           <span
@@ -45,6 +47,7 @@
 </template>
 
 <script setup>
+import { ref, defineEmits } from "vue";
 const types = [
   "cartoon",
   "ball-and-stick",
@@ -52,6 +55,8 @@ const types = [
   "point",
   "spacefill",
 ];
+const selectedType = ref(types[0]);
+defineEmits(["updateVisualization"]);
 </script>
 
 <style>
