@@ -3,6 +3,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 
+const emit = defineEmits(["colorChanged", "chainChanged"]);
+
 const hue = ref(0);
 const saturation = ref(100);
 const value = ref(50);
@@ -97,14 +99,12 @@ function handleKeyDown(event) {
   switch (event.key) {
     case "N": // NEXT CHAIN
       targetChainIndex.value = (targetChainIndex.value + 1) % chains.length;
-      targetChain.value = chains[targetChainIndex.value];
-      console.log("targetChain", targetChain.value);
+      setChain(chains[targetChainIndex.value]);
       break;
     case "P": // PREVIOUS CHAIN
       targetChainIndex.value =
         (targetChainIndex.value - 1 + chains.length) % chains.length;
-      targetChain.value = chains[targetChainIndex.value];
-      console.log("targetChain", targetChain.value);
+      setChain(chains[targetChainIndex.value]);
       break;
   }
 }
@@ -114,6 +114,13 @@ function setHSL(h, s, l) {
   hue.value = h;
   saturation.value = s;
   value.value = l;
+  emit("colorChanged", { h, s, l });
+}
+
+function setChain(chain) {
+  console.log("setChain", chain);
+  targetChain.value = chain;
+  emit("chainChanged", chain);
 }
 
 onMounted(() => {
