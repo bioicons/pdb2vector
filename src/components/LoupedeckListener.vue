@@ -1,73 +1,87 @@
 <template></template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 
 const emit = defineEmits(["colorChanged", "chainChanged"]);
 
-const hue = ref(0);
-const saturation = ref(100);
-const value = ref(50);
+const props = defineProps({
+  chains: Array,
+  chainColors: Object,
+  currentTarget: String,
+});
 
-const chains = ["global", "A", "B", "C"];
-const targetChainIndex = ref(0);
-const targetChain = ref(chains[0]);
+// initialize targetChainIndex using props
+const targetChainIndex = computed(() =>
+  props.chains.indexOf(props.currentTarget)
+);
+
+const hsl = computed(
+  () => props.chainColors[props.currentTarget] ?? { h: 0, s: 0, l: 0 }
+);
+
+const hue = computed(() => hsl.value.h);
+const saturation = computed(() => hsl.value.s);
+const value = computed(() => hsl.value.l);
 
 const DELTA_HUE_PER_KEY_PRESS = 5;
 const DELTA_SATURATION_PER_KEY_PRESS = 5;
 
 function handleKeyDown(event) {
   let changed = true;
+  let nextHue = hue.value,
+    nextSaturation = saturation.value,
+    nextValue = value.value;
   switch (event.key) {
     case "1": // RED
-      hue.value = 0;
-      saturation.value = 100;
-      value.value = 50;
+      nextHue = 0;
+      nextSaturation = 100;
+      nextValue = 50;
       break;
     case "2": // ORANGE
-      hue.value = 30;
-      saturation.value = 100;
-      value.value = 50;
+      nextHue = 30;
+      nextSaturation = 100;
+      nextValue = 50;
       break;
     case "3": // YELLOW
-      hue.value = 60;
-      saturation.value = 100;
-      value.value = 50;
+      nextHue = 60;
+      nextSaturation = 100;
+      nextValue = 50;
       break;
     case "4": // GREEN
-      hue.value = 120;
-      saturation.value = 100;
-      value.value = 50;
+      nextHue = 120;
+      nextSaturation = 100;
+      nextValue = 50;
       break;
     case "5": // BLUE
-      hue.value = 240;
-      saturation.value = 100;
-      value.value = 50;
+      nextHue = 240;
+      nextSaturation = 100;
+      nextValue = 50;
       break;
     case "6": // PINK
-      hue.value = 300;
-      saturation.value = 100;
-      value.value = 50;
+      nextHue = 300;
+      nextSaturation = 100;
+      nextValue = 50;
       break;
     case "7": // WHITE
-      hue.value = 0;
-      saturation.value = 0;
-      value.value = 100;
+      nextHue = 0;
+      nextSaturation = 0;
+      nextValue = 100;
       break;
     case "8": // BLACK
-      hue.value = 0;
-      saturation.value = 0;
-      value.value = 0;
+      nextHue = 0;
+      nextSaturation = 0;
+      nextValue = 0;
       break;
     case "H": // HUE
     case "h":
       if (event.shiftKey) {
-        hue.value = Math.min(
+        nextHue = Math.min(
           360,
           Math.max(0, hue.value - DELTA_HUE_PER_KEY_PRESS)
         );
       } else {
-        hue.value = Math.min(
+        nextHue = Math.min(
           360,
           Math.max(0, hue.value + DELTA_HUE_PER_KEY_PRESS)
         );
@@ -76,17 +90,15 @@ function handleKeyDown(event) {
     case "S": // SATURATION
     case "s":
       if (event.shiftKey) {
-        saturation.value = Math.min(
+        nextSaturation = Math.min(
           100,
           Math.max(0, saturation.value - DELTA_SATURATION_PER_KEY_PRESS)
         );
-        setHSL(hue.value, saturation.value, value.value);
       } else {
-        saturation.value = Math.min(
+        nextSaturation = Math.min(
           100,
           Math.max(0, saturation.value + DELTA_SATURATION_PER_KEY_PRESS)
         );
-        setHSL(hue.value, saturation.value, value.value);
       }
       break;
     default:
@@ -94,32 +106,31 @@ function handleKeyDown(event) {
       break;
   }
   if (changed) {
-    setHSL(hue.value, saturation.value, value.value);
+    setHSL(nextHue, nextSaturation, nextValue);
   }
+
+  let nextTargetChainIndex;
   switch (event.key) {
     case "N": // NEXT CHAIN
-      targetChainIndex.value = (targetChainIndex.value + 1) % chains.length;
-      setChain(chains[targetChainIndex.value]);
+      nextTargetChainIndex = (targetChainIndex.value + 1) % props.chains.length;
+      setChain(props.chains[nextTargetChainIndex]);
       break;
     case "P": // PREVIOUS CHAIN
-      targetChainIndex.value =
-        (targetChainIndex.value - 1 + chains.length) % chains.length;
-      setChain(chains[targetChainIndex.value]);
+      nextTargetChainIndex =
+        (targetChainIndex.value - 1 + props.chains.length) %
+        props.chains.length;
+      setChain(props.chains[nextTargetChainIndex]);
       break;
   }
 }
 
 function setHSL(h, s, l) {
   console.log("setHSL", h, s, l);
-  hue.value = h;
-  saturation.value = s;
-  value.value = l;
   emit("colorChanged", { h, s, l });
 }
 
 function setChain(chain) {
   console.log("setChain", chain);
-  targetChain.value = chain;
   emit("chainChanged", chain);
 }
 
