@@ -1,11 +1,13 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { client } from "@gradio/client";
 
 const props = defineProps({
     pdb: String,
     colors: Object,
 })
 
+const emit = defineEmits(['loadingCompleted'])
 
 
 let viewerInstance = new PDBeMolstarPlugin();
@@ -58,11 +60,37 @@ async function snapshot() {
     return imageDataUri
 }
 
-function vectorize() {
-    let base64img = snapshot()
-    alert("test")
-    console.log(base64img)
-    // to do call api
+async function vectorize() {
+    let base64img = await snapshot()
+    const app = await client("https://richtefee-vtracer-api.hf.space/--replicas/47mkv/");
+    const result = await app.predict("/png2svg", [
+        null, 	// blob in 'Input file' File component		
+        base64img, // string  in 'Input image b64' Textbox component		
+        "out.svg", // string  in 'Output file' Textbox component		
+        "color", // string  in 'Color mode' Dropdown component		
+        "stacked", // string  in 'Hierarchical' Dropdown component		
+        "spline", // string  in 'Curve fitting mode' Dropdown component		
+        60, // number (numeric value between 0 and 128) in 'Filter specles smaller than...' Slider component		
+        8, // number (numeric value between 1 and 8) in 'Color precision' Slider component		
+        16, // number (numeric value between 0 and 128) in 'Gradient step size' Slider component		
+        60, // number (numeric value between 0 and 180) in 'Corner thershold' Slider component		
+        10, // number (numeric value between 3.5 and 10) in 'Segment length' Slider component		
+        10, // number (numeric value between 3.5 and 10) in 'Max iterations' Slider component		
+        45, // number (numeric value between 0 and 180) in 'Splice thereshold' Slider component		
+        8, // number (numeric value between 0 and 16) in 'Path precision' Slider component
+    ]);
+
+    emit('loadingCompleted')
+    const a = document.createElement('a')
+    a.href = result.data[0].url
+    a.download = props.pdb + ".svg"
+    document.body.appendChild(a)
+    // a.click()
+    // document.body.removeChild(a)
+
+
+
+
 }
 
 defineExpose({

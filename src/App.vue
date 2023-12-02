@@ -5,6 +5,8 @@ import LoupedeckListener from "./components/LoupedeckListener.vue";
 
 import PDBInput from './components/PDBInput.vue';
 
+import LoadingSpinner from "./components/LoadingSpinner.vue";
+
 import Btn from './components/Btn.vue';
 import { ref } from 'vue';
 
@@ -65,10 +67,10 @@ function updateTarget(target) {
 const pdbview = ref(null)
 
 let loading = ref(false)
+
 function vectorize() {
-  loading.value = true
+  loading.value = true;
   pdbview.value.vectorize()
-  loading.value = false
 }
 
 </script>
@@ -89,9 +91,9 @@ function vectorize() {
     <PDBInput @load="loadpdb" />
 
     <code>
-                                                 {{ JSON.stringify(chainColors) }}
-                                                 {{ JSON.stringify(currentTarget) }}
-                                                </code>
+                                                                                                     {{ JSON.stringify(chainColors) }}
+                                                                                                     {{ JSON.stringify(currentTarget) }}
+                                                                                                    </code>
     <!-- animate transition -->
     <transition>
       <div v-if="showViewer">
@@ -103,23 +105,25 @@ function vectorize() {
             />
           </div>
           <div class="w-1/2">
-            <MolecularViewer :pdb="entryId" :colors="chainColors" ref="pdbview" />
+            <MolecularViewer :pdb="entryId" :colors="chainColors" @loading-completed="loading = false" ref="pdbview" />
           </div>
         </div>
         <div class="my-6 flex items-center justify-center">
           <Btn @clicked="vectorize()" label="Vectorize" />
 
-          <div v-if="loading">
-            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-700" xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
-              </path>
-            </svg>
-          </div>
+
+
+
+
 
         </div>
+        <div v-if="loading" class="flex flex-col justify-center space-y-2">
+          <div class="text-gray-800 my-4 text-sm">
+            Hang tight while we vectorize your protein...
+          </div>
+          <LoadingSpinner />
 
+        </div>
       </div>
 
 
