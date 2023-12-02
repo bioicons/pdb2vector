@@ -1,6 +1,6 @@
 <script setup>
-import Settings from './components/Settings.vue'
 import MolecularViewer from './components/MolecularViewer.vue';
+import ColorPicker from './components/ColorPicker.vue'
 </script>
 
 <template>
@@ -9,10 +9,10 @@ import MolecularViewer from './components/MolecularViewer.vue';
 
     <div class="flex">
       <div class="w-1/2">
-        <MolecularViewer />
+        <ColorPicker />
       </div>
       <div class="w-1/2">
-        <Settings />
+        <MolecularViewer />
       </div>
     </div>
   </div>
