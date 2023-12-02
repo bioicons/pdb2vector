@@ -15,44 +15,47 @@ const DELTA_HUE_PER_KEY_PRESS = 5;
 const DELTA_SATURATION_PER_KEY_PRESS = 5;
 
 function handleKeyDown(event) {
-  console.log(event);
+  let changed = true;
   switch (event.key) {
     case "1": // RED
-      setHSL(0, 100, 50);
+      hue.value = 0;
+      saturation.value = 100;
+      value.value = 50;
       break;
     case "2": // ORANGE
-      setHSL(30, 100, 50);
+      hue.value = 30;
+      saturation.value = 100;
+      value.value = 50;
       break;
     case "3": // YELLOW
-      setHSL(60, 100, 50);
+      hue.value = 60;
+      saturation.value = 100;
+      value.value = 50;
       break;
     case "4": // GREEN
-      setHSL(120, 100, 50);
+      hue.value = 120;
+      saturation.value = 100;
+      value.value = 50;
       break;
     case "5": // BLUE
-      setHSL(240, 100, 50);
+      hue.value = 240;
+      saturation.value = 100;
+      value.value = 50;
       break;
     case "6": // PINK
-      setHSL(300, 100, 50);
+      hue.value = 300;
+      saturation.value = 100;
+      value.value = 50;
       break;
     case "7": // WHITE
-      setHSL(0, 0, 100);
+      hue.value = 0;
+      saturation.value = 0;
+      value.value = 100;
       break;
     case "8": // BLACK
-      setHSL(0, 0, 0);
-      break;
-    case "N": // NEXT CHAIN
-      targetChainIndex.value = (targetChainIndex.value + 1) % chains.length;
-      targetChain.value = chains[targetChainIndex.value];
-      console.log("targetChain", targetChain.value);
-
-      break;
-    case "P": // PREVIOUS CHAIN
-      targetChainIndex.value =
-        (targetChainIndex.value - 1 + chains.length) % chains.length;
-      targetChain.value = chains[targetChainIndex.value];
-      console.log("targetChain", targetChain.value);
-
+      hue.value = 0;
+      saturation.value = 0;
+      value.value = 0;
       break;
     case "H": // HUE
     case "h":
@@ -61,13 +64,11 @@ function handleKeyDown(event) {
           360,
           Math.max(0, hue.value - DELTA_HUE_PER_KEY_PRESS)
         );
-        setHSL(hue.value, saturation.value, value.value);
       } else {
         hue.value = Math.min(
           360,
           Math.max(0, hue.value + DELTA_HUE_PER_KEY_PRESS)
         );
-        setHSL(hue.value, saturation.value, value.value);
       }
       break;
     case "S": // SATURATION
@@ -86,6 +87,25 @@ function handleKeyDown(event) {
         setHSL(hue.value, saturation.value, value.value);
       }
       break;
+    default:
+      changed = false;
+      break;
+  }
+  if (changed) {
+    setHSL(hue.value, saturation.value, value.value);
+  }
+  switch (event.key) {
+    case "N": // NEXT CHAIN
+      targetChainIndex.value = (targetChainIndex.value + 1) % chains.length;
+      targetChain.value = chains[targetChainIndex.value];
+      console.log("targetChain", targetChain.value);
+      break;
+    case "P": // PREVIOUS CHAIN
+      targetChainIndex.value =
+        (targetChainIndex.value - 1 + chains.length) % chains.length;
+      targetChain.value = chains[targetChainIndex.value];
+      console.log("targetChain", targetChain.value);
+      break;
   }
 }
 
@@ -103,8 +123,4 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("keydown", handleKeyDown);
 });
-
-// export function useColor() {
-//   return { hue, saturation, value };
-// }
 </script>
