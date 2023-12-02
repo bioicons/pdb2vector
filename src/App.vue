@@ -1,30 +1,21 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import Settings from './components/Settings.vue'
+import MolecularViewer from './components/MolecularViewer.vue';
 </script>
 
 <template>
   <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <h1 class="text-xl font-bold">PDB2Vector</h1>
+
+    <div class="flex">
+      <div class="w-1/2">
+        <MolecularViewer />
+      </div>
+      <div class="w-1/2">
+        <Settings />
+      </div>
+    </div>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<style scoped></style>
