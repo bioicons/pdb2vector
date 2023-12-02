@@ -1,13 +1,15 @@
 <template>
     <div>
         <input type="text" placeholder="PDB Code" v-model="pdb">
-        <button @click="load">Fetch</button>
+        <Btn @clicked="load" label="Load" />
     </div>
 </template>
 
 <script setup>
 
 import { ref } from 'vue'
+
+import Btn from './Btn.vue';
 
 const pdb = ref('1pga')
 const emit = defineEmits(['load'])
