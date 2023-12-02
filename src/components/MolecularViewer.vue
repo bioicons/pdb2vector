@@ -7,9 +7,13 @@ defineProps({
 
 let viewerInstance = new PDBeMolstarPlugin();
 
-var options = {
+let options = {
     moleculeId: '2nnu',
     hideControls: true,
+    landscape: true,
+    pdbeLink: false,
+    hideStructure: ['water'],
+    visualStyle: 'molecular-surface',
     bgColor: { r: 255, g: 255, b: 255 }
 }
 
@@ -18,13 +22,38 @@ const viewerContainer = ref(null)
 onMounted(() => {
     //Call render method to display the 3D view
     viewerInstance.render(viewerContainer.value, options);
+
 })
+
+viewerInstance.events.loadComplete.subscribe(() => {
+    viewerInstance.plugin.layout.context.canvas3d.camera.state.mode = "orthographic";
+    viewerInstance.plugin.layout.context.canvas3d.camera.state.fog = 0;
+    viewerInstance.plugin.layout.context.canvas3d.camera.state.clipFar = false;
+});
+
+
+function updateRep() {
+    options['visualStyle'] = "cartoon"
+    console.log(options)
+    viewerInstance.visual.update(options)
+}
+
+function updateColor() {
+    viewerInstance.visual.select({
+        data: [{
+            entity_id: '*'
+        }],
+        nonSelectedColor: { r: 255, g: 0, b: 0 }
+    })
+}
 
 </script>
 
 
 <template>
     <h1>Viewer</h1>
+    <button @click="updateRep()"> Cartoon</button>
+    <button @click="updateColor()"> Color to red</button>
     <div id="viewer" ref="viewerContainer"></div>
 </template>
 
