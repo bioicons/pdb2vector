@@ -3,8 +3,11 @@ import MolecularViewer from "./components/MolecularViewer.vue";
 import ColorPicker from "./components/ColorPicker.vue";
 import LoupedeckListener from "./components/LoupedeckListener.vue";
 
-import PDBInput from "./components/PDBInput.vue";
-import { ref } from "vue";
+import PDBInput from './components/PDBInput.vue';
+
+import Btn from './components/Btn.vue';
+import { ref } from 'vue';
+
 
 async function getInChainsValues(entryId) {
   const apiUrl = `https://www.ebi.ac.uk/pdbe/api/pdb/entry/molecules/${entryId}`;
@@ -52,14 +55,22 @@ async function loadpdb(pdbcode) {
 }
 
 function updateColor(color) {
-  console.log("update color");
-  chainColors.value[currentTarget.value] = color;
+  chainColors.value[currentTarget.value] = color
 }
 
 function updateTarget(target) {
-  console.log("update target");
-  currentTarget.value = target;
+  currentTarget.value = target
 }
+
+const pdbview = ref(null)
+
+let loading = ref(false)
+function vectorize() {
+  loading.value = true
+  pdbview.value.vectorize()
+  loading.value = false
+}
+
 </script>
 
 <template>
@@ -78,9 +89,9 @@ function updateTarget(target) {
     <PDBInput @load="loadpdb" />
 
     <code>
-      {{ JSON.stringify(chainColors) }}
-      {{ JSON.stringify(currentTarget) }}
-    </code>
+                                                 {{ JSON.stringify(chainColors) }}
+                                                 {{ JSON.stringify(currentTarget) }}
+                                                </code>
     <!-- animate transition -->
     <transition>
       <div v-if="showViewer">
@@ -92,10 +103,26 @@ function updateTarget(target) {
             />
           </div>
           <div class="w-1/2">
-            <MolecularViewer :pdb="entryId" :colors="chainColors" />
+            <MolecularViewer :pdb="entryId" :colors="chainColors" ref="pdbview" />
           </div>
         </div>
+        <div class="my-6 flex items-center justify-center">
+          <Btn @clicked="vectorize()" label="Vectorize" />
+
+          <div v-if="loading">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-700" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
+              </path>
+            </svg>
+          </div>
+
+        </div>
+
       </div>
+
+
     </transition>
   </div>
 </template>

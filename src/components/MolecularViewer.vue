@@ -7,7 +7,6 @@ const props = defineProps({
 })
 
 
-let base64image = ref(null)
 
 let viewerInstance = new PDBeMolstarPlugin();
 
@@ -38,7 +37,6 @@ viewerInstance.events.loadComplete.subscribe(() => {
 
 function updateRep() {
     options['visualStyle'] = "cartoon"
-    console.log(options)
     viewerInstance.visual.update(options)
 }
 
@@ -57,10 +55,19 @@ async function snapshot() {
     viewerInstance.plugin.helpers.viewportScreenshot.behaviors.values._value.resolution['name'] = 'ultra-hd'
 
     const imageDataUri = await viewerInstance.plugin.helpers.viewportScreenshot?.getImageDataUri()
-    base64image = imageDataUri
+    return imageDataUri
 }
 
+function vectorize() {
+    let base64img = snapshot()
+    alert("test")
+    console.log(base64img)
+    // to do call api
+}
 
+defineExpose({
+    vectorize
+})
 
 
 </script>
