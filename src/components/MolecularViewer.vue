@@ -1,14 +1,18 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 
-defineProps({
+const props = defineProps({
+    pdb: String,
+    colors: Object,
 })
 
+
+let base64image = ref(null)
 
 let viewerInstance = new PDBeMolstarPlugin();
 
 let options = {
-    moleculeId: '2nnu',
+    moleculeId: props.pdb,
     hideControls: true,
     landscape: true,
     pdbeLink: false,
@@ -41,19 +45,31 @@ function updateRep() {
 function updateColor() {
     viewerInstance.visual.select({
         data: [{
-            entity_id: '*'
+            // entity_id: '*',
+            struct_asym_id: 'B'
+            // chain: "B"
         }],
         nonSelectedColor: { r: 255, g: 0, b: 0 }
     })
 }
+// retrieve snapshot asynchronously
+async function snapshot() {
+    viewerInstance.plugin.helpers.viewportScreenshot.behaviors.values._value.resolution['name'] = 'ultra-hd'
+
+    const imageDataUri = await viewerInstance.plugin.helpers.viewportScreenshot?.getImageDataUri()
+    base64image = imageDataUri
+}
+
+
+
 
 </script>
 
 
 <template>
-    <h1>Viewer</h1>
     <button @click="updateRep()"> Cartoon</button>
     <button @click="updateColor()"> Color to red</button>
+    <button @click="snapshot()"> Snapshot</button>
     <div id="viewer" ref="viewerContainer"></div>
 </template>
 
