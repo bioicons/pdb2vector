@@ -7,6 +7,10 @@ const hue = ref(0);
 const saturation = ref(100);
 const value = ref(50);
 
+const chains = ["global", "A", "B", "C"];
+const targetChainIndex = ref(0);
+const targetChain = ref(chains[0]);
+
 const HUE_DELTA_PER_WHEEL_SCROLL = 0.05;
 const SATURATION_DELTA_PER_WHEEL_SCROLL = 0.1;
 
@@ -36,10 +40,28 @@ function handleKeyDown(event) {
     case "8": // BLACK
       setHSL(0, 0, 0);
       break;
+    case "N":
+      if (event.shiftKey) {
+        targetChainIndex.value = (targetChainIndex.value + 1) % chains.length;
+        targetChain.value = chains[targetChainIndex.value];
+        console.log("targetChain", targetChain.value);
+      }
+      break;
+    case "P":
+      if (event.shiftKey) {
+        targetChainIndex.value =
+          (targetChainIndex.value - 1 + chains.length) % chains.length;
+        targetChain.value = chains[targetChainIndex.value];
+        console.log("targetChain", targetChain.value);
+      }
+      break;
   }
 }
 
 function handleWheel(event) {
+  console.log(
+    `shiftKey: ${event.shiftKey}, ctrlKey: ${event.ctrlKey}, deltaX: ${event.deltaX}, deltaY: ${event.deltaY}`
+  );
   if (event.shiftKey) {
     const hueDelta = event.deltaX * HUE_DELTA_PER_WHEEL_SCROLL;
     hue.value = Math.min(360, Math.max(0, hue.value + hueDelta));
