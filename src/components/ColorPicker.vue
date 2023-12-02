@@ -11,7 +11,9 @@
     </div>
   </RadioGroup>
   <div class="relative flex cursor-pointer items-center justify-center rounded-full p-2">
-    <button aria-hidden="true" class="h-8 w-8 rounded-full border border-black border-opacity-10" @click="addCustomColor()"/>
+    <button class="mt-10 block w-full rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" @click="addCustomColor()">
+      Add Color
+    </button>
   </div>
 </div>
 </template>
@@ -23,7 +25,7 @@ import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 const defaultColors = [[100, 0, 0], [100, 0, 100], [0, 100, 100], [0, 0, 100], [0, 100, 0]]
 const space = " "
 
-const customColors = [
+const customColors = [ [256,256,256]
 ]
 
 const addCustomColor = () => {
