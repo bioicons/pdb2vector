@@ -2,6 +2,9 @@
 import MolecularViewer from "./components/MolecularViewer.vue";
 import ColorPicker from "./components/ColorPicker.vue";
 import LoupedeckListener from "./components/LoupedeckListener.vue";
+import { reactive } from "vue";
+
+const chains = reactive({'*': [0,0,0], 'a': null, 'b': null, 'c': null})
 </script>
 
 <template>
@@ -10,7 +13,7 @@ import LoupedeckListener from "./components/LoupedeckListener.vue";
     <LoupedeckListener />
     <div class="flex">
       <div class="w-1/2">
-        <ColorPicker />
+        <ColorPicker :chains="chains"/>
       </div>
       <div class="w-1/2">
         <MolecularViewer />
