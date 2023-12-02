@@ -2,6 +2,7 @@
 import MolecularViewer from "./components/MolecularViewer.vue";
 import ColorPicker from "./components/ColorPicker.vue";
 import LoupedeckListener from "./components/LoupedeckListener.vue";
+import VisualizationRadioGroup from './components/VisualizationRadioGroup.vue';
 
 import PDBInput from './components/PDBInput.vue';
 
@@ -101,6 +102,9 @@ function vectorize() {
               @colorchanged="updateColor"
               @chainchanged="updateTarget"
             />
+            <div class="mt-4 max-w-[90%] mx-auto">
+              <VisualizationRadioGroup />
+            </div>
           </div>
           <div class="w-1/2">
             <MolecularViewer :pdb="entryId" :colors="chainColors" ref="pdbview" />
