@@ -3,7 +3,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from "vue";
 
-const emit = defineEmits(["colorChanged", "chainChanged"]);
+const emit = defineEmits(["colorChanged", "chainChanged", "exportPushed"]);
 
 const props = defineProps({
   chains: Array,
@@ -114,6 +114,12 @@ function handleKeyDown(event) {
         (targetChainIndex.value - 1 + props.chains.length) %
         props.chains.length;
       setChain(props.chains[nextTargetChainIndex]);
+      break;
+  }
+
+  switch (event.key) {
+    case "b":
+      emit("exportPushed", 0);
       break;
   }
 }

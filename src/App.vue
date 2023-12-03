@@ -92,7 +92,8 @@ function vectorize() {
       <h1 class="text-3xl font-bold">PDB2Vector</h1>
       <p>Vectorize any protein image easily.</p>
     </div>
-    <LoupedeckListener @color-changed="updateColor" @chain-changed="updateTarget" :chains="chains"
+    <LoupedeckListener @color-changed="updateColor" @chain-changed="updateTarget"
+      @export-pushed="vectorize()" :chains="chains"
       :chain-colors="chainColors" :currentTarget="currentTarget" />
 
     <transition>
