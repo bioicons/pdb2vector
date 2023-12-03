@@ -79,37 +79,29 @@ function vectorize() {
 </script>
 
 <template>
-
   <div class="container mx-auto">
     <div class="flex flex-col space-y-2 justify-center w-full">
       <h1 class="text-3xl font-bold">PDB2Vector</h1>
       <p>Vectorize any protein image easily.</p>
     </div>
-    <LoupedeckListener
-      @color-changed="updateColor"
-      @chain-changed="updateTarget"
-      :chains="chains"
-      :chain-colors="chainColors"
-      :current-target="currentTarget"
-    />
+    <LoupedeckListener @color-changed="updateColor" @chain-changed="updateTarget" :chains="chains"
+      :chain-colors="chainColors" :current-target="currentTarget" />
 
 
     <!-- ToDO make component look nice, display loading -->
     <PDBInput @load="loadpdb" />
 
     <code>
-                                                                                                             {{ JSON.stringify(chainColors) }}
-                                                                                                             {{ JSON.stringify(currentTarget) }}
-                                                                                                            </code>
+                         {{ JSON.stringify(chainColors) }}
+                                   {{ JSON.stringify(currentTarget) }}
+                                                                                                                          </code>
     <!-- animate transition -->
     <transition>
       <div v-if="showViewer">
         <div class="flex">
           <div class="w-1/2">
-            <ColorPicker
-              @colorchanged="updateColor"
-              @chainchanged="updateTarget"
-            />
+            <ColorPicker @colorchanged="updateColor" @chain-changed="updateTarget" :chains="chainColors"
+              :current-target="currentTarget" />
           </div>
           <div class="w-1/2">
             <MolecularViewer :pdb="entryId" :colors="chainColors" @loading-completed="loading = false" ref="pdbview" />
