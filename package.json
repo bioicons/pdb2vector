@@ -9,7 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@gradio/client": "^0.8.2",
     "@headlessui/vue": "^1.7.16",
+    "@radial-color-picker/vue-color-picker": "^5.0.1",
+    "@tailwindcss/forms": "^0.5.7",
+    "prettier": "^3.1.0",
     "vue": "^3.3.8"
   },
   "devDependencies": {

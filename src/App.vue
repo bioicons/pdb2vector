@@ -3,8 +3,13 @@ import MolecularViewer from "./components/MolecularViewer.vue";
 import ColorPicker from "./components/ColorPicker.vue";
 import LoupedeckListener from "./components/LoupedeckListener.vue";
 import VisualizationRadioGroup from './components/VisualizationRadioGroup.vue';
+import { reactive } from "vue";
+
+// const chains = reactive({'*': [0,100,50], 'a': null, 'b': null, 'c': null})
 
 import PDBInput from './components/PDBInput.vue';
+
+import LoadingSpinner from "./components/LoadingSpinner.vue";
 
 import Btn from './components/Btn.vue';
 import { ref } from 'vue';
@@ -68,18 +73,21 @@ function updateTarget(target) {
 const pdbview = ref(null)
 
 let loading = ref(false)
+
 function vectorize() {
-  loading.value = true
+  loading.value = true;
   pdbview.value.vectorize()
-  loading.value = false
 }
 
 </script>
 
 <template>
-  <div>
-    <h1 class="text-xl font-bold">PDB2Vector</h1>
 
+  <div class="container mx-auto">
+    <div class="flex flex-col space-y-2 justify-center w-full">
+      <h1 class="text-3xl font-bold">PDB2Vector</h1>
+      <p>Vectorize any protein image easily.</p>
+    </div>
     <LoupedeckListener
       @color-changed="updateColor"
       @chain-changed="updateTarget"
@@ -88,13 +96,14 @@ function vectorize() {
       :current-target="currentTarget"
     />
 
+
     <!-- ToDO make component look nice, display loading -->
     <PDBInput @load="loadpdb" />
 
     <code>
-                                                 {{ JSON.stringify(chainColors) }}
-                                                 {{ JSON.stringify(currentTarget) }}
-                                                </code>
+                                                                                                             {{ JSON.stringify(chainColors) }}
+                                                                                                             {{ JSON.stringify(currentTarget) }}
+                                                                                                            </code>
     <!-- animate transition -->
     <transition>
       <div v-if="showViewer">
@@ -109,23 +118,26 @@ function vectorize() {
             </div>
           </div>
           <div class="w-1/2">
-            <MolecularViewer :pdb="entryId" :colors="chainColors" :visual-style="visualStyle" ref="pdbview" />
+            <MolecularViewer :pdb="entryId" :colors="chainColors"  @loading-completed="loading = false" :visual-style="visualStyle" ref="pdbview" />
+
           </div>
         </div>
         <div class="my-6 flex items-center justify-center">
           <Btn @clicked="vectorize()" label="Vectorize" />
 
-          <div v-if="loading">
-            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-700" xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z">
-              </path>
-            </svg>
-          </div>
+
+
+
+
 
         </div>
+        <div v-if="loading" class="flex flex-col justify-center space-y-2">
+          <div class="text-gray-800 my-4 text-sm">
+            Hang tight while we vectorize your protein...
+          </div>
+          <LoadingSpinner />
 
+        </div>
       </div>
 
 
