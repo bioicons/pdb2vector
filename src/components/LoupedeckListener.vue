@@ -76,15 +76,9 @@ function handleKeyDown(event) {
     case "H": // HUE
     case "h":
       if (event.shiftKey) {
-        nextHue = Math.min(
-          360,
-          Math.max(0, hue.value - DELTA_HUE_PER_KEY_PRESS)
-        );
+        nextHue = (hue.value - DELTA_HUE_PER_KEY_PRESS) % 360;
       } else {
-        nextHue = Math.min(
-          360,
-          Math.max(0, hue.value + DELTA_HUE_PER_KEY_PRESS)
-        );
+        nextHue = (hue.value + DELTA_HUE_PER_KEY_PRESS) % 360;
       }
       break;
     case "S": // SATURATION
