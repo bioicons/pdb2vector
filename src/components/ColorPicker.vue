@@ -34,18 +34,18 @@
         </div>
       </RadioGroup>
       <div>
-        <color-picker variant='persistent' :hue="color[0]" :saturation="color[1]" :luminosity="color[2]"
+        <color-picker variant='persistent' :hue="color.h" :saturation="color.s" :luminosity="color.l"
           @input="updateChannel"/>
           <div>Saturation:</div>
-        <input id="large-range" type="range" :value="color[1]"
-          :onchange="(change) => updateChannel(change.target.valueAsNumber, 1)"
+        <input id="large-range" type="range" :value="color.s"
+          :onchange="(change) => updateChannel(change.target.valueAsNumber, 's')"
           class="w-full h-6 rounded-lg bg-gray-200 appearance-none ::--webkit-slider-thumb:appeareance-none cursor-pointer range-lg dark:bg-gray-700"
-          :style="`background: linear-gradient(to right, hsl(${color[0]} 0% ${color[2]}%), hsl(${color[0]} 100% ${color[2]}%))`">
+          :style="`background: linear-gradient(to right, hsl(${color.h} 0% ${color.l}%), hsl(${color.h} 100% ${color.l}%))`">
           <div>Luminosity:</div>
-          <input id="large-range" type="range" :value="color[2]"
-          :onchange="(change) => updateChannel(change.target.valueAsNumber, 2)"
+          <input id="large-range" type="range" :value="color.l"
+          :onchange="(change) => updateChannel(change.target.valueAsNumber, 'l')"
           class="w-full h-6 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg dark:bg-gray-700"
-          :style="`background: linear-gradient(to right, hsl(${color[0]} ${color[1]}% 0%), hsl(${color[0]} ${color[1]}% 100%))`">
+          :style="`background: linear-gradient(to right, hsl(${color.h} ${color.s}% 0%), hsl(${color.h} ${color.s}% 100%))`">
 
       </div>
     </div>
@@ -61,9 +61,9 @@ const { chains } = defineProps(['chains'])
 const currentChain = ref("*")
 const color = computed(() => chains[currentChain.value] || null)
 
-const defaultColors = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => [Math.round((360 * i) / 10), 100, 50])
+const defaultColors = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => {return {h: Math.round((360 * i) / 10), s: 100, l: 50}})
 const colors = reactive([chains["*"], ...defaultColors])
-const formatHSL = (arr) => `hsl(${arr[0]} ${arr[1]}% ${arr[2]}%`
+const formatHSL = (hsl) => `hsl(${hsl.h} ${hsl.s}% ${hsl.l}%`
 
 const setCurrentChain = (val) => {
   currentChain.value = val
@@ -75,7 +75,7 @@ const enableCustomColor = (chain) => {
     chains[chain] = null
   }
 }
-const updateChannel = (value, channel = 0) => {
+const updateChannel = (value, channel = 'h') => {
   chains[currentChain.value][channel] = value
 }
 
