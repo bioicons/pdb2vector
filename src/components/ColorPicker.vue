@@ -19,7 +19,7 @@
       <span class="font-medium text-gray-900">Use custom color</span>
     </div>
   </button>
-  <div :class="[color == null && 'hidden', 'w-60']">
+  <div v-if=color class="w-60">
     <RadioGroup v-model="chains[currentChain]">
       <RadioGroupLabel class="block text-sm font-medium leading-6 text-gray-900">Choose a label color</RadioGroupLabel>
       <div class="grid grid-cols-5 gap-4">
@@ -55,7 +55,7 @@ import ColorPicker from '@radial-color-picker/vue-color-picker';
 
 const { chains } = defineProps(['chains'])
 const currentChain = ref("*")
-const color = computed(() => chains[currentChain.value])
+const color = computed(() => chains[currentChain.value] || null)
 
 const defaultColors = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => [Math.round((360 * i) / 10), 100, 50])
 const colors = reactive([chains["*"], ...defaultColors])
