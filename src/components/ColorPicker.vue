@@ -97,3 +97,15 @@ const updateChannel = (value, channel = 'h') => {
 <style>
 @import '@radial-color-picker/vue-color-picker/dist/vue-color-picker.min.css';
 </style>
+
+<style>
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  background: white;
+  margin-top: 0px;
+}
+</style>

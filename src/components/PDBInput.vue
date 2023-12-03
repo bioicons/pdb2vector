@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <input type="text" placeholder="PDB Code" v-model="pdb">
+    <div class="flex w-full items-center justify-center space-x-2">
+        <input type="text" placeholder="PDB Code" v-model="pdb" class="rounded-lg border-gray-400 border">
         <Btn @clicked="load" label="Load" />
     </div>
 </template>
