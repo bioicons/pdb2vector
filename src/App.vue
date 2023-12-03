@@ -81,18 +81,20 @@ function vectorize() {
 </script>
 
 <template>
-  <div>
-    <h1 class="text-xl font-bold">PDB2Vector</h1>
-
+  <div class="container mx-auto">
+    <div class="flex flex-col space-y-2 justify-center w-full">
+      <h1 class="text-3xl font-bold">PDB2Vector</h1>
+      <p>Vectorize any protein image easily.</p>
+    </div>
     <LoupedeckListener @color-changed="updateColor" @chain-changed="updateTarget" />
 
     <!-- ToDO make component look nice, display loading -->
     <PDBInput @load="loadpdb" />
 
     <code>
-                                                                                                     {{ JSON.stringify(chainColors) }}
-                                                                                                     {{ JSON.stringify(currentTarget) }}
-                                                                                                    </code>
+                                                                                                             {{ JSON.stringify(chainColors) }}
+                                                                                                             {{ JSON.stringify(currentTarget) }}
+                                                                                                            </code>
     <!-- animate transition -->
     <transition>
       <div v-if="showViewer">
