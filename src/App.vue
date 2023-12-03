@@ -57,7 +57,12 @@ async function loadpdb(pdbcode) {
 
   //foreach chain insert hsl object
   chains.value.forEach((chain) => {
-    chainColors.value[chain] = { h: 0, s: 0, l: 0 };
+    if (chain == "*") {
+      chainColors.value[chain] = { h: 0, s: 100, l: 50 };
+    }
+    else {
+      chainColors.value[chain] = null
+    }
   });
   showViewer.value = true;
 }
@@ -88,7 +93,7 @@ function vectorize() {
       <p>Vectorize any protein image easily.</p>
     </div>
     <LoupedeckListener @color-changed="updateColor" @chain-changed="updateTarget" :chains="chains"
-      :chain-colors="chainColors" :current-target="currentTarget" />
+      :chain-colors="chainColors" :currentTarget="currentTarget" />
 
 
     <!-- ToDO make component look nice, display loading -->

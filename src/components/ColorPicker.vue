@@ -6,7 +6,7 @@
     <div>
       <label for="tabs" class="sr-only">Chain</label>
       <div class="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-        <button v-for="chain in Object.keys(chains)" :key="chain"
+        <button v-for="chain in tabs" :key="chain"
           :class="[[chain == currentchain ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover:text-gray-700', 'rounded-md px-3 py-2 text-sm font-medium']]"
           @click="setcurrentchain(chain)">{{ chain }}</button>
       </div>
@@ -71,9 +71,10 @@ const props = defineProps({
 
 // const props = defineProps(['chains'])
 const chains = props.chains
-const currentchain = ref(props.currentTarget.value)
-// const currentchain = ref("*")
-const color = computed(() => chains[currentchain.value] || null)
+const currentchain = ref(props.currentTarget)
+
+const tabs = Object.keys(props.chains).length > 2 ? Object.keys(props.chains) : ['*']
+const color = computed(() => chains[currentchain.value])
 
 const defaultColors = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => { return { h: Math.round((360 * i) / 10), s: 100, l: 50 } })
 const colors = reactive([chains["*"], ...defaultColors])

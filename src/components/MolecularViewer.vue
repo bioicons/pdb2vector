@@ -50,23 +50,6 @@ function updateRep() {
     viewerInstance.visual.update(options)
 }
 
-function updateColor(chain, color) {
-    let data = []
-    if (chain == "*") {
-        data = [{
-            entity_id: '*',
-        }]
-    } else {
-        data = [{
-            struct_asym_id: chain
-        }]
-    }
-    viewerInstance.visual.select({
-        data: data,
-        nonSelectedColor: color
-    })
-}
-
 
 
 
@@ -126,14 +109,25 @@ watch(() => props.visualStyle, (newVisualStyle) => {
 
 function updateAll() {
     let colorObject = JSON.parse(JSON.stringify(props.colors))
-    // console.log(colorObject)
+    const defaultColor = HSL2RGB(colorObject["*"])
+    const data = []
     for (const [chain, color] of Object.entries(colorObject)) {
-        if (color != null) {
-            console.log(HSL2RGB(color))
-            updateColor(chain, HSL2RGB(color))
+        if (chain != '*') {
+            if (color == null) {
+                data.push({
+                    struct_asym_id: chain,
+                    color: defaultColor
+                })
+            } else {
+                data.push({
+                    struct_asym_id: chain,
+                    color: HSL2RGB(color)
+                })
+            }
         }
-
     }
+    console.log(data)
+    viewerInstance.visual.select({ data: data })
 }
 
 
