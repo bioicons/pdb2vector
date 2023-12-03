@@ -1,10 +1,11 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { client } from "@gradio/client";
 
 const props = defineProps({
     pdb: String,
     colors: Object,
+    visualStyle: String
 })
 
 const emit = defineEmits(['loadingCompleted'])
@@ -97,6 +98,12 @@ defineExpose({
     vectorize
 })
 
+watch(() => props.visualStyle, (newVisualStyle) => {
+    console.log(newVisualStyle)
+    options['visualStyle'] = newVisualStyle
+    console.log(options)
+    viewerInstance.visual.update(options)
+})
 
 </script>
 

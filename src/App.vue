@@ -2,6 +2,7 @@
 import MolecularViewer from "./components/MolecularViewer.vue";
 import ColorPicker from "./components/ColorPicker.vue";
 import LoupedeckListener from "./components/LoupedeckListener.vue";
+import VisualizationRadioGroup from './components/VisualizationRadioGroup.vue';
 import { reactive } from "vue";
 
 // const chains = reactive({'*': [0,100,50], 'a': null, 'b': null, 'c': null})
@@ -44,6 +45,8 @@ let chainColors = ref({});
 let showViewer = ref(false);
 
 let currentTarget = ref("*");
+
+let visualStyle = ref("cartoon");
 
 async function loadpdb(pdbcode) {
   entryId.value = pdbcode;
@@ -110,9 +113,13 @@ function vectorize() {
               @colorchanged="updateColor"
               @chainchanged="updateTarget"
             />
+            <div class="mt-4 max-w-[90%] mx-auto">
+              <VisualizationRadioGroup @update-visualization="(style) => {visualStyle = style;}"/>
+            </div>
           </div>
           <div class="w-1/2">
-            <MolecularViewer :pdb="entryId" :colors="chainColors" @loading-completed="loading = false" ref="pdbview" />
+            <MolecularViewer :pdb="entryId" :colors="chainColors"  @loading-completed="loading = false" :visual-style="visualStyle" ref="pdbview" />
+
           </div>
         </div>
         <div class="my-6 flex items-center justify-center">
