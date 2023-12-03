@@ -12,7 +12,7 @@ const props = defineProps({
     chainColors: Object
 })
 
-const emit = defineEmits(['loadingCompleted'])
+const emit = defineEmits(['loadingCompleted', 'structureloaded'])
 
 
 let viewerInstance = new PDBeMolstarPlugin();
@@ -23,7 +23,7 @@ let options = {
     landscape: true,
     pdbeLink: false,
     hideStructure: ['water'],
-    visualStyle: 'molecular-surface',
+    visualStyle: 'cartoon',
     bgColor: { r: 255, g: 255, b: 255 }
 }
 
@@ -42,13 +42,10 @@ viewerInstance.events.loadComplete.subscribe(() => {
     viewerInstance.plugin.layout.context.canvas3d.camera.state.fog = 0;
     viewerInstance.plugin.layout.context.canvas3d.camera.state.clipFar = false;
     loadCompleted.value = true;
+    emit('structureloaded')
 });
 
 
-function updateRep() {
-    options['visualStyle'] = "cartoon"
-    viewerInstance.visual.update(options)
-}
 
 
 
@@ -82,11 +79,11 @@ async function vectorize() {
         8, // number (numeric value between 0 and 16) in 'Path precision' Slider component
     ]);
 
-    emit('loadingCompleted')
-    const a = document.createElement('a')
-    a.href = result.data[0].url
-    a.download = props.pdb + ".svg"
-    document.body.appendChild(a)
+    emit('loadingCompleted', result.data[0].url)
+    // const a = document.createElement('a')
+    // a.href = 
+    // a.download = props.pdb + ".svg"
+    // document.body.appendChild(a)
     // a.click()
     // document.body.removeChild(a)
 
@@ -100,14 +97,13 @@ defineExpose({
 })
 
 watch(() => props.visualStyle, (newVisualStyle) => {
-    console.log(newVisualStyle)
     options['visualStyle'] = newVisualStyle
-    console.log(options)
     viewerInstance.visual.update(options)
 })
 
 
 function updateAll() {
+    console.log("updateAll")
     let colorObject = JSON.parse(JSON.stringify(props.colors))
     const defaultColor = HSL2RGB(colorObject["*"])
     const data = []
@@ -123,7 +119,7 @@ function updateAll() {
                 data.push({
                     struct_asym_id: chain,
                     color: HSL2RGB(color),
-                    representationColor: color
+                    representationColor: HSL2RGB(color)
                 })
             }
         }
