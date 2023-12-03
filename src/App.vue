@@ -2,6 +2,9 @@
 import MolecularViewer from "./components/MolecularViewer.vue";
 import ColorPicker from "./components/ColorPicker.vue";
 import LoupedeckListener from "./components/LoupedeckListener.vue";
+import { reactive } from "vue";
+
+// const chains = reactive({'*': [0,100,50], 'a': null, 'b': null, 'c': null})
 
 import PDBInput from './components/PDBInput.vue';
 
