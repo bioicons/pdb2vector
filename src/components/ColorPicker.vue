@@ -8,7 +8,8 @@
         @click="setCurrentChain(chain)">{{ chain }}</button>
     </div>
   </div>
-  <button as="div" :class="[currentChain == '*' && 'hidden', 'flex items-center']" @click="enableCustomColor(currentChain)">
+  <button as="div" :class="[currentChain == '*' && 'hidden', 'flex items-center']"
+    @click="enableCustomColor(currentChain)">
     <div
       :class="[chains[currentChain] ? 'bg-indigo-600' : 'bg-gray-200', 'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2']">
       <span aria-hidden="true"
@@ -31,7 +32,17 @@
         </RadioGroupOption>
       </div>
     </RadioGroup>
-    <color-picker variant='persistent' :hue="colorHSL[0]" :saturation="colorHSL[1]" :luminosity="colorHSL[2]" @input="updateColor" saturation="0" />
+    <div>
+      <color-picker variant='persistent' :hue="colorHSL[0]" :saturation="colorHSL[1]" :luminosity="colorHSL[2]"
+        @input="updateColor" saturation="0" />
+      <input id="large-range" type="range" :value="colorHSL[1]" :onchange="(change) => updateColor(change.target.valueAsNumber, 1)"
+        class="w-full h-6 bg-gray-200 appearance-none ::--webkit-slider-thumb:appeareance-none cursor-pointer range-lg dark:bg-gray-700"
+        :style="`background: linear-gradient(to right, hsl(${colorHSL[0]} 0% ${colorHSL[2]}%), hsl(${colorHSL[0]} 100% ${colorHSL[2]}%))`">
+      <input id="large-range" type="range" :value="colorHSL[2]" :onchange="(change) => updateColor(change.target.valueAsNumber, 2)"
+        class="w-full h-6 bg-gray-200 appearance-none cursor-pointer range-lg dark:bg-gray-700"
+        :style="`background: linear-gradient(to right, hsl(${colorHSL[0]} ${colorHSL[1]}% 0%), hsl(${colorHSL[0]} ${colorHSL[1]}% 100%))`">
+
+    </div>
   </div>
 </template>
 
@@ -39,7 +50,7 @@
 import { ref, reactive, computed } from 'vue'
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import ColorPicker from '@radial-color-picker/vue-color-picker';
-import {RGB2HSL, HSL2RGB } from './colorUtils'
+import { RGB2HSL, HSL2RGB } from './colorUtils'
 
 const { chains } = defineProps(['chains'])
 const tabs = Object.keys(chains)
@@ -47,7 +58,7 @@ const currentChain = ref("*")
 
 const defaultColors = [[256, 0, 256], [0, 256, 256], [0, 0, 256], [0, 256, 0], [0, 0, 0], [256, 256, 256], [0, 128, 256], [256, 0, 128], [128, 0, 256]]
 const colors = reactive([chains["*"], ...defaultColors])
-const colorHSL = computed(() => RGB2HSL(...(chains[currentChain.value] || [0,0,0])))
+const colorHSL = computed(() => RGB2HSL(...(chains[currentChain.value] || [0, 0, 0])))
 
 const setCurrentChain = (val) => {
   currentChain.value = val
@@ -59,8 +70,9 @@ const enableCustomColor = (chain) => {
     chains[chain] = null
   }
 }
-const updateColor = (value) => {
-  const rgb = HSL2RGB(value, 100, 50)
+const updateColor = (value, channel=0) => {
+  colorHSL.value[channel] = value
+  const rgb = HSL2RGB(...colorHSL.value)
   chains[currentChain.value].length = 0
   chains[currentChain.value].push(...rgb)
 }
@@ -68,4 +80,5 @@ const updateColor = (value) => {
 </script>
 
 <style>
-@import '@radial-color-picker/vue-color-picker/dist/vue-color-picker.min.css';</style>
+@import '@radial-color-picker/vue-color-picker/dist/vue-color-picker.min.css';
+</style>
