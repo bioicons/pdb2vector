@@ -19,7 +19,7 @@
       <span class="font-medium text-gray-900">Use custom color</span>
     </div>
   </button>
-  <div :class="[chains[currentChain] == null && 'hidden', 'w-60']">
+  <div :class="[color == null && 'hidden', 'w-60']">
     <RadioGroup v-model="chains[currentChain]">
       <RadioGroupLabel class="block text-sm font-medium leading-6 text-gray-900">Choose a label color</RadioGroupLabel>
       <div class="grid grid-cols-5 gap-4">
@@ -27,20 +27,22 @@
           <div
             :class="[active && checked ? ' ring ring-offset-1' : '', !active && checked ? 'ring-2' : '', 'relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none ring-gray-700']">
             <span aria-hidden="true" class='h-8 w-8 rounded-full border border-black border-opacity-10'
-              :style="{ 'background-color': `rgb(${color.join(' ')})` }" />
+              :style="{ 'background-color': `${formatHSL(color)}` }" />
           </div>
         </RadioGroupOption>
       </div>
     </RadioGroup>
     <div>
-      <color-picker variant='persistent' :hue="colorHSL[0]" :saturation="colorHSL[1]" :luminosity="colorHSL[2]"
-        @input="updateColor" saturation="0" />
-      <input id="large-range" type="range" :value="colorHSL[1]" :onchange="(change) => updateColor(change.target.valueAsNumber, 1)"
-        class="w-full h-6 bg-gray-200 appearance-none ::--webkit-slider-thumb:appeareance-none cursor-pointer range-lg dark:bg-gray-700"
-        :style="`background: linear-gradient(to right, hsl(${colorHSL[0]} 0% ${colorHSL[2]}%), hsl(${colorHSL[0]} 100% ${colorHSL[2]}%))`">
-      <input id="large-range" type="range" :value="colorHSL[2]" :onchange="(change) => updateColor(change.target.valueAsNumber, 2)"
-        class="w-full h-6 bg-gray-200 appearance-none cursor-pointer range-lg dark:bg-gray-700"
-        :style="`background: linear-gradient(to right, hsl(${colorHSL[0]} ${colorHSL[1]}% 0%), hsl(${colorHSL[0]} ${colorHSL[1]}% 100%))`">
+      <color-picker variant='persistent' :hue="color[0]" :saturation="color[1]" :luminosity="color[2]"
+        @input="updateChannel" />
+      <input id="large-range" type="range" :value="color[1]"
+        :onchange="(change) => updateChannel(change.target.valueAsNumber, 1)"
+        class="w-full h-6 rounded-lg bg-gray-200 appearance-none ::--webkit-slider-thumb:appeareance-none cursor-pointer range-lg dark:bg-gray-700"
+        :style="`background: linear-gradient(to right, hsl(${color[0]} 0% ${color[2]}%), hsl(${color[0]} 100% ${color[2]}%))`">
+      <input id="large-range" type="range" :value="color[2]"
+        :onchange="(change) => updateChannel(change.target.valueAsNumber, 2)"
+        class="w-full h-6 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg dark:bg-gray-700"
+        :style="`background: linear-gradient(to right, hsl(${color[0]} ${color[1]}% 0%), hsl(${color[0]} ${color[1]}% 100%))`">
 
     </div>
   </div>
@@ -50,15 +52,14 @@
 import { ref, reactive, computed } from 'vue'
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import ColorPicker from '@radial-color-picker/vue-color-picker';
-import { RGB2HSL, HSL2RGB } from './colorUtils'
 
 const { chains } = defineProps(['chains'])
-const tabs = Object.keys(chains)
 const currentChain = ref("*")
+const color = computed(() => chains[currentChain.value])
 
-const defaultColors = [[256, 0, 256], [0, 256, 256], [0, 0, 256], [0, 256, 0], [0, 0, 0], [256, 256, 256], [0, 128, 256], [256, 0, 128], [128, 0, 256]]
+const defaultColors = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => [Math.round((360 * i) / 10), 100, 50])
 const colors = reactive([chains["*"], ...defaultColors])
-const colorHSL = computed(() => RGB2HSL(...(chains[currentChain.value] || [0, 0, 0])))
+const formatHSL = (arr) => `hsl(${arr[0]} ${arr[1]}% ${arr[2]}%`
 
 const setCurrentChain = (val) => {
   currentChain.value = val
@@ -70,11 +71,8 @@ const enableCustomColor = (chain) => {
     chains[chain] = null
   }
 }
-const updateColor = (value, channel=0) => {
-  colorHSL.value[channel] = value
-  const rgb = HSL2RGB(...colorHSL.value)
-  chains[currentChain.value].length = 0
-  chains[currentChain.value].push(...rgb)
+const updateChannel = (value, channel = 0) => {
+  chains[currentChain.value][channel] = value
 }
 
 </script>

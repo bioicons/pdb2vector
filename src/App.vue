@@ -4,7 +4,7 @@ import ColorPicker from "./components/ColorPicker.vue";
 import LoupedeckListener from "./components/LoupedeckListener.vue";
 import { reactive } from "vue";
 
-const chains = reactive({'*': [256,0,0], 'a': null, 'b': null, 'c': null})
+const chains = reactive({'*': [0,100,50], 'a': null, 'b': null, 'c': null})
 </script>
 
 <template>
