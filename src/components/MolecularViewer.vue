@@ -1,14 +1,19 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { client } from "@gradio/client";
 
-defineProps({
+const props = defineProps({
+    pdb: String,
+    colors: Object,
 })
+
+const emit = defineEmits(['loadingCompleted'])
 
 
 let viewerInstance = new PDBeMolstarPlugin();
 
 let options = {
-    moleculeId: '2nnu',
+    moleculeId: props.pdb,
     hideControls: true,
     landscape: true,
     pdbeLink: false,
@@ -34,26 +39,72 @@ viewerInstance.events.loadComplete.subscribe(() => {
 
 function updateRep() {
     options['visualStyle'] = "cartoon"
-    console.log(options)
     viewerInstance.visual.update(options)
 }
 
 function updateColor() {
     viewerInstance.visual.select({
         data: [{
-            entity_id: '*'
+            // entity_id: '*',
+            struct_asym_id: 'B'
+            // chain: "B"
         }],
         nonSelectedColor: { r: 255, g: 0, b: 0 }
     })
 }
+// retrieve snapshot asynchronously
+async function snapshot() {
+    viewerInstance.plugin.helpers.viewportScreenshot.behaviors.values._value.resolution['name'] = 'ultra-hd'
+
+    const imageDataUri = await viewerInstance.plugin.helpers.viewportScreenshot?.getImageDataUri()
+    return imageDataUri
+}
+
+async function vectorize() {
+    let base64img = await snapshot()
+    const app = await client("https://richtefee-vtracer-api.hf.space/--replicas/47mkv/");
+    const result = await app.predict("/png2svg", [
+        null, 	// blob in 'Input file' File component		
+        base64img, // string  in 'Input image b64' Textbox component		
+        "out.svg", // string  in 'Output file' Textbox component		
+        "color", // string  in 'Color mode' Dropdown component		
+        "stacked", // string  in 'Hierarchical' Dropdown component		
+        "spline", // string  in 'Curve fitting mode' Dropdown component		
+        60, // number (numeric value between 0 and 128) in 'Filter specles smaller than...' Slider component		
+        8, // number (numeric value between 1 and 8) in 'Color precision' Slider component		
+        16, // number (numeric value between 0 and 128) in 'Gradient step size' Slider component		
+        60, // number (numeric value between 0 and 180) in 'Corner thershold' Slider component		
+        10, // number (numeric value between 3.5 and 10) in 'Segment length' Slider component		
+        10, // number (numeric value between 3.5 and 10) in 'Max iterations' Slider component		
+        45, // number (numeric value between 0 and 180) in 'Splice thereshold' Slider component		
+        8, // number (numeric value between 0 and 16) in 'Path precision' Slider component
+    ]);
+
+    emit('loadingCompleted')
+    const a = document.createElement('a')
+    a.href = result.data[0].url
+    a.download = props.pdb + ".svg"
+    document.body.appendChild(a)
+    // a.click()
+    // document.body.removeChild(a)
+
+
+
+
+}
+
+defineExpose({
+    vectorize
+})
+
 
 </script>
 
 
 <template>
-    <h1>Viewer</h1>
     <button @click="updateRep()"> Cartoon</button>
     <button @click="updateColor()"> Color to red</button>
+    <button @click="snapshot()"> Snapshot</button>
     <div id="viewer" ref="viewerContainer"></div>
 </template>
 
