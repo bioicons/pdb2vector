@@ -1,10 +1,15 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { client } from "@gradio/client";
+
+import "./colorUtils";
+import { HSL2RGB } from './colorUtils';
 
 const props = defineProps({
     pdb: String,
     colors: Object,
+    visualStyle: String,
+    chainColors: Object
 })
 
 const emit = defineEmits(['loadingCompleted'])
@@ -24,6 +29,8 @@ let options = {
 
 const viewerContainer = ref(null)
 
+const loadCompleted = ref(false)
+
 onMounted(() => {
     //Call render method to display the 3D view
     viewerInstance.render(viewerContainer.value, options);
@@ -34,6 +41,7 @@ viewerInstance.events.loadComplete.subscribe(() => {
     viewerInstance.plugin.layout.context.canvas3d.camera.state.mode = "orthographic";
     viewerInstance.plugin.layout.context.canvas3d.camera.state.fog = 0;
     viewerInstance.plugin.layout.context.canvas3d.camera.state.clipFar = false;
+    loadCompleted.value = true;
 });
 
 
@@ -42,16 +50,27 @@ function updateRep() {
     viewerInstance.visual.update(options)
 }
 
-function updateColor() {
+function updateColor(chain, color) {
+    let data = []
+    if (chain == "*") {
+        data = [{
+            entity_id: '*',
+        }]
+    } else {
+        data = [{
+            struct_asym_id: chain
+        }]
+    }
     viewerInstance.visual.select({
-        data: [{
-            // entity_id: '*',
-            struct_asym_id: 'B'
-            // chain: "B"
-        }],
-        nonSelectedColor: { r: 255, g: 0, b: 0 }
+        data: data,
+        nonSelectedColor: color
     })
 }
+
+
+
+
+
 // retrieve snapshot asynchronously
 async function snapshot() {
     viewerInstance.plugin.helpers.viewportScreenshot.behaviors.values._value.resolution['name'] = 'ultra-hd'
@@ -97,14 +116,46 @@ defineExpose({
     vectorize
 })
 
+watch(() => props.visualStyle, (newVisualStyle) => {
+    console.log(newVisualStyle)
+    options['visualStyle'] = newVisualStyle
+    console.log(options)
+    viewerInstance.visual.update(options)
+})
+
+
+function updateAll() {
+    let colorObject = JSON.parse(JSON.stringify(props.colors))
+    // console.log(colorObject)
+    for (const [chain, color] of Object.entries(colorObject)) {
+        if (color != null) {
+            console.log(HSL2RGB(color))
+            updateColor(chain, HSL2RGB(color))
+        }
+
+    }
+}
+
+
+// whenever chainColors changes, update the color of the chain
+watch(() => props.colors, (newChainColors) => {
+
+
+    if (loadCompleted.value) {
+
+        updateAll()
+    }
+
+}, { deep: true })
 
 </script>
 
 
 <template>
     <!-- <button @click="updateRep()"> Cartoon</button>
-    <button @click="updateColor()"> Color to red</button>
-    <button @click="snapshot()"> Snapshot</button> -->
+    <button @click="updateColor()"> Color to red</button> -->
+    <button @click="updateAll()"> Set color</button>
+    {{ JSON.stringify(props.colors) }}
     <div id="viewer" ref="viewerContainer"></div>
 </template>
 

@@ -64,7 +64,7 @@ const emit = defineEmits(["chainChanged"]);
 
 
 const props = defineProps({
-  chains: Array,
+  chains: Object,
   // chainColors: Object,
   currentTarget: String,
 });
