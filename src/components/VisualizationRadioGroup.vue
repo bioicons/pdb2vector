@@ -26,7 +26,8 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from "vue";
+import { ref, defineEmits, onMounted, onUnmounted } from "vue";
+
 const types = [
   "cartoon",
   "ball-and-stick",
@@ -35,7 +36,38 @@ const types = [
   "spacefill",
 ];
 const selectedType = ref(types[0]);
-defineEmits(["updateVisualization"]);
+const emit = defineEmits(["updateVisualization"]);
+
+function handleKeyDown(event) {
+  let changed = true;
+  switch (event.key) {
+    case "z":
+      selectedType.value = "cartoon";
+      break;
+    case "x":
+      selectedType.value = "ball-and-stick";
+      break;
+    case "c":
+      selectedType.value = "molecular-surface";
+      break;
+    case "v":
+      selectedType.value = "spacefill";
+      break;
+    default:
+      changed = false;
+  }
+  if (changed) {
+    emit("updateVisualization", selectedType.value);
+  }
+}
+
+onMounted(() => {
+  window.addEventListener("keydown", handleKeyDown);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("keydown", handleKeyDown);
+});
 </script>
 
 <style>

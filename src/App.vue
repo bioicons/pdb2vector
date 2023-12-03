@@ -118,6 +118,15 @@ function structureLoaded() {
         <PDBInput @load="loadpdb" v-if="!showViewer" class="w-full" />
       </transition>
     </div>
+    <LoupedeckListener @color-changed="updateColor" @chain-changed="updateTarget"
+      @export-pushed="vectorize()" :chains="chains"
+      :chain-colors="chainColors" :currentTarget="currentTarget" />
+
+    <transition>
+      <!-- ToDO make component look nice, display loading -->
+      <PDBInput @load="loadpdb" v-if="!showViewer" />
+    </transition>
+
     <!-- animate transition -->
     <transition>
       <div v-if="showViewer" class="px-8"> <!--:class="hideViewer ? 'hidden' : ''" -->
