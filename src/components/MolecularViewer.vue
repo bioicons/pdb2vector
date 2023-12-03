@@ -102,9 +102,9 @@ defineExpose({
 
 
 <template>
-    <button @click="updateRep()"> Cartoon</button>
+    <!-- <button @click="updateRep()"> Cartoon</button>
     <button @click="updateColor()"> Color to red</button>
-    <button @click="snapshot()"> Snapshot</button>
+    <button @click="snapshot()"> Snapshot</button> -->
     <div id="viewer" ref="viewerContainer"></div>
 </template>
 
