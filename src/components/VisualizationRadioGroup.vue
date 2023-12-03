@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-5 gap-6 h-36 items-stretch">
+  <div class="grid grid-cols-2 gap-4 h-30 items-stretch">
     <div v-for="type in types" :key="type">
       <div class="h-full">
         <label
@@ -7,7 +7,7 @@
           class="relative flex flex-col bg-white p-5 rounded-lg shadow-md cursor-pointer h-full"
         >
           <span
-            class="font-semibold text-md text-gray-900 leading-tight uppercase m-auto"
+            class="font-semibold text-sm text-gray-900 leading-tight uppercase m-auto"
             >{{ type }}</span
           >
           <input

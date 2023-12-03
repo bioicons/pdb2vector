@@ -126,7 +126,6 @@ function updateAll() {
             }
         }
     }
-    console.log(data)
     viewerInstance.visual.select({ data: data })
 }
 

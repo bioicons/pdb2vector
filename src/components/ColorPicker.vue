@@ -1,8 +1,5 @@
 <template>
-  <div class="px-8">
-
-    {{ JSON.stringify(chains) }}
-    {{ JSON.stringify(color) }}
+  <div>
     <div>
       <label for="tabs" class="sr-only">Chain</label>
       <div class="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">

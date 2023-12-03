@@ -95,19 +95,16 @@ function vectorize() {
     <LoupedeckListener @color-changed="updateColor" @chain-changed="updateTarget" :chains="chains"
       :chain-colors="chainColors" :currentTarget="currentTarget" />
 
+    <transition>
+      <!-- ToDO make component look nice, display loading -->
+      <PDBInput @load="loadpdb" v-if="!showViewer" />
+    </transition>
 
-    <!-- ToDO make component look nice, display loading -->
-    <PDBInput @load="loadpdb" />
-
-    <code>
-                           {{ JSON.stringify(chainColors) }}
-                                     {{ JSON.stringify(currentTarget) }}
-                                                                                                                            </code>
     <!-- animate transition -->
     <transition>
       <div v-if="showViewer">
         <div class="flex">
-          <div class="w-1/2">
+          <div class="w-1/4">
 
             <ColorPicker @colorchanged="updateColor" @chain-changed="updateTarget" :chains="chainColors"
               :current-target="currentTarget" />
@@ -116,7 +113,7 @@ function vectorize() {
               <VisualizationRadioGroup @update-visualization="(style) => { visualStyle = style; }" />
             </div>
           </div>
-          <div class="w-1/2">
+          <div class="w-3/4">
             <MolecularViewer :pdb="entryId" :colors="chainColors" @loading-completed="loading = false"
               :visual-style="visualStyle" ref="pdbview" />
 
