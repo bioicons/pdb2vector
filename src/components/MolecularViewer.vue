@@ -145,10 +145,6 @@ watch(() => props.colors, (newChainColors) => {
 
 
 <template>
-    <!-- <button @click="updateRep()"> Cartoon</button>
-    <button @click="updateColor()"> Color to red</button> -->
-    <button @click="updateAll()"> Set color</button>
-    {{ JSON.stringify(props.colors) }}
     <div id="viewer" ref="viewerContainer"></div>
 </template>
 
