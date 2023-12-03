@@ -116,12 +116,14 @@ function updateAll() {
             if (color == null) {
                 data.push({
                     struct_asym_id: chain,
-                    color: defaultColor
+                    color: defaultColor,
+                    representationColor: defaultColor
                 })
             } else {
                 data.push({
                     struct_asym_id: chain,
-                    color: HSL2RGB(color)
+                    color: HSL2RGB(color),
+                    representationColor: color
                 })
             }
         }
