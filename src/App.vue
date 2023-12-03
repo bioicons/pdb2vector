@@ -41,6 +41,8 @@ let showViewer = ref(false);
 
 let currentTarget = ref("*");
 
+let visualStyle = ref("cartoon");
+
 async function loadpdb(pdbcode) {
   entryId.value = pdbcode;
   chains.value = await getInChainsValues(pdbcode);
@@ -103,11 +105,11 @@ function vectorize() {
               @chainchanged="updateTarget"
             />
             <div class="mt-4 max-w-[90%] mx-auto">
-              <VisualizationRadioGroup @update-visualization="(value) => {console.log(value)}"/>
+              <VisualizationRadioGroup @update-visualization="(style) => {visualStyle = style;}"/>
             </div>
           </div>
           <div class="w-1/2">
-            <MolecularViewer :pdb="entryId" :colors="chainColors" ref="pdbview" />
+            <MolecularViewer :pdb="entryId" :colors="chainColors" :visual-style="visualStyle" ref="pdbview" />
           </div>
         </div>
         <div class="my-6 flex items-center justify-center">

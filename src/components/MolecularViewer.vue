@@ -1,9 +1,10 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
     pdb: String,
     colors: Object,
+    visualStyle: String
 })
 
 
@@ -69,6 +70,12 @@ defineExpose({
     vectorize
 })
 
+watch(() => props.visualStyle, (newVisualStyle) => {
+    console.log(newVisualStyle)
+    options['visualStyle'] = newVisualStyle
+    console.log(options)
+    viewerInstance.visual.update(options)
+})
 
 </script>
 
